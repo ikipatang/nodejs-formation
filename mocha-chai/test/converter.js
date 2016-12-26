@@ -1,8 +1,9 @@
-var expect    = require("chai").expect;
+var chai    = require("chai");
 var dirtyChai = require('dirty-chai');
 var converter = require("../app/converter");
 
 chai.use(dirtyChai);
+var expect = chai.expect;
 
 // expect(true).to.be.true();
 
