@@ -16,18 +16,24 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "babel-core": "^6.21.0",
-    "babel-eslint": "^7.1.1",
-    "babel-plugin-transform-async-to-generator": "^6.16.0",
-    "babel-preset-es2015-node4": "latest",
-    "babel-preset-stage-1": "^6.13.0",
     "bluebird": "^3.4.7",
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
-    "eslint": "^3.12.2",
     "mocha": "^2.2.1",
-    "q-io": "^1.13.2",
-    "serverless-build-plugin": "^0.6.3",
-    "serverless-offline": "^3.6.0"
+    "q-io": "^1.13.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.6.0",
+    "babel-eslint": "^6.1.2",
+    "babel-plugin-transform-async-to-generator": "^6.8.0",
+    "babel-preset-es2015-node4": "latest",
+    "babel-preset-stage-1": "^6.13.0",
+    "eslint": "^2.2.0",
+    "eslint-config-airbnb-base": "^3.0.1",
+    "eslint-plugin-import": "^1.8.1",
+    "eslint-plugin-react": "^6.4.1",
+    "nyc": "^6.6.1",
+    "serverless-build-plugin": "^0.2.4-beta",
+    "serverless-offline": "2.8.2"
   }
 }

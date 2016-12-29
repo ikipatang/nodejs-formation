@@ -3,65 +3,62 @@ import qhttp from 'q-io/http';
 import Promise from 'bluebird';
 const db = new dbpromise(`${__dirname}/../../db/route-params.db`);
 
-export async function listAllAlbumsIds()
-{
-  const arrayalbumsIds = [];
-  try
-  {
-    const albumsIds = await db.query('SELECT id FROM album ORDER BY id ASC');
-    albumsIds.forEach((album) =>
-    {
-      arrayalbumsIds.push(album.id);
-    });
-  }
-  catch (err)
-  {
+async function fetchQuery(query) {
+  let albumsIds = [];
+  try {
+    albumsIds = await db.query(query);
+  } catch (err) {
     throw err;
   }
+  return albumsIds;
+}
+
+export async function listAllAlbumsIds() {
+  const arrayalbumsIds = [];
+  const albumsIds = await fetchQuery('SELECT id FROM album ORDER BY id ASC');
+  albumsIds.forEach((album) => {
+    arrayalbumsIds.push(album.id);
+  });
   return arrayalbumsIds;
 }
 
-export async function getAlbums()
-{
-  var url = 'https://jsonplaceholder.typicode.com/albums';
+export async function getAlbums() {
+  const url = 'https://jsonplaceholder.typicode.com/albums';
   return await qhttp.read(url).then(JSON.parse);
 }
 
-export async function getAlbum(albumId)
-{
-  var url = `https://jsonplaceholder.typicode.com/albums/${albumId}`;
-  var result = await qhttp.read(url).then(JSON.parse);
+export async function getAlbum(albumId) {
+  const url = `https://jsonplaceholder.typicode.com/albums/${albumId}`;
 
-  return result;
+  return await qhttp.read(url).then(JSON.parse);
 }
 
-export async function listDbAlbums()
-{
-  var arrayAlbums = [];
+export async function listDbAlbums() {
+  const arrayAlbums = [];
   const albumsIds = await listAllAlbumsIds();
-  await Promise.map(albumsIds, (async(album) =>
-  {
+  await Promise.map(albumsIds, (async(album) => {
     arrayAlbums[album] = await getAlbum(album);
   }));
-  return arrayAlbums;
+
+  /*
+  Remove empty values, ie : albums from the DB begin on id 1 so the array will contain the
+  first element at 0 which does not exists
+  */
+  return arrayAlbums.filter(Boolean);
 }
 
-export async function fillDbAlbums(albums)
-{
-  var arrayValues = [];
-  albums.forEach((album) =>
-  {
+export async function fillDbAlbums(albums) {
+  const arrayValues = [];
+  albums.forEach((album) => {
     arrayValues.push(`(${album.id}, ${album.userId}, '${album.title}')`);
   });
 
-  var queryInsert = `INSERT OR IGNORE INTO album (id, userId, title) VALUES ${arrayValues.join(',')}`;
+  const queryInsert =
+    `INSERT OR IGNORE INTO album (id, userId, title) VALUES ${arrayValues.join(',')}`;
 
-  try
-  {
-    const result = await db.query(queryInsert).then(null, console.error);
-  }
-  catch (err)
-  {
+  try {
+    await db.query(queryInsert).then(null, console.error);
+  } catch (err) {
     throw err;
   }
 }
